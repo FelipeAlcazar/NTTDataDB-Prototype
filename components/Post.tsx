@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, TouchableOpacity, Text, Image, Modal } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { ThemedText } from '@/components/ThemedText';
@@ -10,6 +10,7 @@ type PostProps = {
   content: string;
   topic: string;
   author: string;
+  image?: any; // Optional image property
 };
 
 const colors = ['#4B0082', '#2F4F4F', '#000080', '#800080', '#8B4513', '#A52A2A', '#2E8B57', '#483D8B'];
@@ -18,12 +19,21 @@ const getRandomColor = () => {
   return colors[Math.floor(Math.random() * colors.length)];
 };
 
-const Post = ({ title, content, topic, author }: PostProps) => {
+const Post = ({ title, content, topic, author, image }: PostProps) => {
+  const [modalVisible, setModalVisible] = useState(false);
   const authorColor = getRandomColor();
 
   const handleAuthorPress = () => {
     // Handle author press event
     console.log(`Author ${author} clicked`);
+  };
+
+  const handleImagePress = () => {
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
   };
 
   return (
@@ -37,11 +47,26 @@ const Post = ({ title, content, topic, author }: PostProps) => {
             </Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.topicContainer}>
-          <Text style={styles.topicLabel}>{topic}</Text>
+        <View style={[styles.topicContainer, topic === 'Anuncio' && styles.anuncioTopicContainer]}>
+          <Text style={[styles.topicLabel, topic === 'Anuncio' && styles.anuncioTopicLabel]}>{topic}</Text>
         </View>
       </View>
       <ThemedText style={[styles.blackText, styles.content]}>{content}</ThemedText>
+      {image && (
+        <>
+          <TouchableOpacity onPress={handleImagePress}>
+            <Image source={image} style={styles.image} />
+          </TouchableOpacity>
+          <Modal visible={modalVisible} transparent={true}>
+            <View style={styles.modalContainer}>
+              <TouchableOpacity style={styles.closeButton} onPress={handleCloseModal}>
+                <Text style={styles.closeButtonText}>X</Text>
+              </TouchableOpacity>
+              <Image source={image} style={styles.fullImage} />
+            </View>
+          </Modal>
+        </>
+      )}
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.postButton}>
           <Icon name="comment" size={20} color="#000" />
@@ -84,10 +109,22 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     paddingHorizontal: 8,
   },
+  anuncioTopicContainer: {
+    backgroundColor: 'yellow', // Yellow background for "anuncio" topic
+  },
   topicLabel: {
     color: '#fff',
     fontWeight: 'bold',
     userSelect: 'none', // Make text non-selectable
+  },
+  anuncioTopicLabel: {
+    color: '#000', // Black text color for "anuncio" topic
+  },
+  image: {
+    width: '100%',
+    height: 200,
+    borderRadius: 8,
+    marginTop: 8,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -99,6 +136,29 @@ const styles = StyleSheet.create({
     marginRight: 8,
     backgroundColor: '#ddd',
     borderRadius: 4,
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  fullImage: {
+    width: '90%',
+    height: '90%',
+    borderRadius: 8,
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 40,
+    right: 20,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 10,
+  },
+  closeButtonText: {
+    color: '#000',
+    fontSize: 18,
   },
 });
 
