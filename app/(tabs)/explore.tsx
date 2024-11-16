@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { TextInput, FlatList, View, StyleSheet } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { Button } from "react-native";
 
 const users = [
   { id: "1", name: "John Doe" },
@@ -42,6 +43,11 @@ export default function UserSearch() {
         renderItem={({ item }) => (
           <View style={styles.userItem}>
             <ThemedText>{item.name}</ThemedText>
+            <Button
+              title="Añadir usuario"
+              onPress={() => handleAddUser(item.name)}
+              color="#007bff"
+            />
           </View>
         )}
       />
@@ -52,20 +58,39 @@ export default function UserSearch() {
 const styles = StyleSheet.create({
   searchContainer: {
     padding: 16,
+    backgroundColor: "#000",
+    flex: 1,
   },
   searchInput: {
     height: 40,
-    color: "#000",
-    borderColor: "#ccc",
+    color: "#fff",
+    borderColor: "#333",
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 8,
     marginBottom: 16,
-    backgroundColor: "#fff", // Added background color white
+    backgroundColor: "#1c1c1c",
   },
   userItem: {
     padding: 8,
-    borderBottomColor: "#ccc",
+    borderBottomColor: "#333",
     borderBottomWidth: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  addButton: {
+    marginLeft: "auto",
+    backgroundColor: "#ff0050",
+    padding: 8,
+    borderRadius: 8,
+  },
+  addButtonText: {
+    color: "#fff",
   },
 });
+
+const handleAddUser = (userName: string) => {
+  // Logic to add user
+  console.log(`User ${userName} added`);
+};
