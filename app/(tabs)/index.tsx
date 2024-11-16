@@ -1,5 +1,3 @@
-/** @format */
-
 import React, { useState } from "react";
 import {
   StyleSheet,
@@ -17,7 +15,7 @@ const warzone = require("@/assets/images/warzone.jpg"); // Import the warzone im
 const futbol = require("@/assets/images/futbol.jpg"); // Import the futbol image
 const nttdata = require("@/assets/images/nttdata.jpg"); // Import the nttdata image
 
-const posts = [
+const initialPosts = [
   {
     id: "1",
     title: "Estrategias en Call of Duty: Warzone",
@@ -56,9 +54,10 @@ const posts = [
   },
 ];
 
-const topics = ["Todos", ...new Set(posts.map((post) => post.topic))];
+const topics = ["Todos", ...new Set(initialPosts.map((post) => post.topic))];
 
 export default function HomeScreen() {
+  const [posts, setPosts] = useState(initialPosts);
   const [selectedTopic, setSelectedTopic] = useState("Todos");
 
   const filteredPosts =
@@ -68,21 +67,23 @@ export default function HomeScreen() {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [newPost, setNewPost] = useState({
+    id: "",
     title: "",
-    category: "",
+    topic: "",
     author: "",
     content: "",
-    media: null,
+    image: null,
   });
 
   const handlePost = () => {
-    //setFeed([...feed, newPost]);
+    setPosts([...posts, { ...newPost, id: (posts.length + 1).toString() }]);
     setNewPost({
+      id: "",
       title: "",
-      category: "",
+      topic: "",
       author: "",
       content: "",
-      media: null,
+      image: null,
     });
     setModalVisible(false);
   };
@@ -91,6 +92,7 @@ export default function HomeScreen() {
     // Lógica para añadir medios (puedes usar react-native-image-picker o expo-image-picker).
     alert("Función para añadir medios no implementada.");
   };
+
   const handleInputChange = (field: string, value: string) => {
     setNewPost({ ...newPost, [field]: value });
   };
