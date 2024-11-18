@@ -1,28 +1,30 @@
 /** @format */
 
 import React, { useState } from "react";
-import { TextInput, FlatList, View, StyleSheet, TouchableOpacity, Text } from "react-native";
+import { TextInput, FlatList, View, StyleSheet } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Button } from "react-native";
-
-// Global variable to store followed topics
-let followedTopics: string[] = [];
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const users = [
   { id: "1", name: "John Doe" },
   { id: "2", name: "Jane Smith" },
   { id: "3", name: "Alice Johnson" },
-  // Add more users as needed
-];
-
-const suggestedTopics = [
-  "Tecnología", "Salud", "Deportes", "Entretenimiento", "Ciencia", "Viajes", "Comida", "Música", "Películas", "Arte", "Historia", "Educación", "Fitness", "Naturaleza", "Política", "Negocios", "Finanzas", "Juegos", "Moda", "Fotografía", "Literatura", "Psicología", "Filosofía", "Cultura", "Medio Ambiente", "Bricolaje", "Artesanías", "Paternidad", "Relaciones", "Espiritualidad"
+  { id: "4", name: "Bob Brown" },
+  { id: "5", name: "Charlie White" },
+  { id: "6", name: "David Black" },
+  { id: "7", name: "Eve Green" },
+  { id: "8", name: "Frank Grey" },
+  { id: "9", name: "Grace Purple" },
+  { id: "10", name: "Helen Orange" },
 ];
 
 export default function UserSearch() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredUsers, setFilteredUsers] = useState(users);
+
+  const insets = useSafeAreaInsets();
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -36,66 +38,58 @@ export default function UserSearch() {
     }
   };
 
-  const handleAddTopic = (topic: string) => {
-    if (!followedTopics.includes(topic)) {
-      followedTopics.push(topic);
-      console.log(`Topic ${topic} added to followed topics`);
-    }
-  };
-
   return (
-    <ThemedView style={styles.searchContainer}>
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Buscar usuarios..."
-        value={searchQuery}
-        onChangeText={handleSearch}
-      />
-      <FlatList
-        data={filteredUsers}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.userItem}>
-            <ThemedText style={styles.userText}>{item.name}</ThemedText>
-            <TouchableOpacity style={styles.addButton} onPress={() => handleAddUser(item.name)}>
-              <Text style={styles.addButtonText}>Añadir usuario</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      />
-      <View style={styles.suggestedTopicsContainer}>
-        <ThemedText style={styles.suggestedTopicsTitle}>Temas Sugeridos</ThemedText>
-        <View style={styles.topicsGrid}>
-          {suggestedTopics.map((topic) => (
-            <TouchableOpacity
-              key={topic}
-              style={styles.topicButton}
-              onPress={() => handleAddTopic(topic)}
-            >
-              <Text style={styles.topicButtonText}>{topic}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </View>
-    </ThemedView>
+    <View
+      style={[
+        styles.container,
+        { paddingTop: insets.top, paddingBottom: insets.bottom },
+      ]}
+    >
+      <ThemedView style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search users..."
+          value={searchQuery}
+          onChangeText={handleSearch}
+        />
+        <FlatList
+          data={filteredUsers}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View style={styles.userItem}>
+              <ThemedText>{item.name}</ThemedText>
+              <Button
+                title="Añadir usuario"
+                onPress={() => handleAddUser(item.name)}
+                color="#007bff"
+              />
+            </View>
+          )}
+        />
+      </ThemedView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
   searchContainer: {
     padding: 16,
-    backgroundColor: "#fff", // White background for the main page
+    backgroundColor: "#000",
     flex: 1,
   },
   searchInput: {
     height: 40,
-    color: "#000", // Black text color for input
+    color: "#fff",
     borderColor: "#333",
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 8,
     marginBottom: 16,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "#1c1c1c",
   },
   userItem: {
     padding: 8,
@@ -105,45 +99,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  userText: {
-    color: "#000", // Black text color for user names
-  },
   addButton: {
     marginLeft: "auto",
-    backgroundColor: "#007bff",
+    backgroundColor: "#ff0050",
     padding: 8,
-    borderRadius: 8, // Rounded borders for the button
+    borderRadius: 8,
   },
   addButtonText: {
     color: "#fff",
-  },
-  suggestedTopicsContainer: {
-    marginTop: 16,
-    backgroundColor: "#fff", // White background for suggested topics section
-    padding: 16,
-    borderRadius: 8,
-  },
-  suggestedTopicsTitle: {
-    color: "#000", // Black text color for title
-    fontSize: 18,
-    marginBottom: 8,
-  },
-  topicsGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-  },
-  topicButton: {
-    backgroundColor: "#007bff",
-    padding: 8,
-    borderRadius: 8,
-    marginBottom: 8,
-    marginRight: 8,
-    minWidth: "30%",
-  },
-  topicButtonText: {
-    color: "#fff",
-    textAlign: "center",
   },
 });
 
