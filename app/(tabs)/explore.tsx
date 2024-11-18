@@ -45,28 +45,30 @@ export default function UserSearch() {
         { paddingTop: insets.top, paddingBottom: insets.bottom },
       ]}
     >
-      <ThemedView style={styles.searchContainer}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search users..."
-          value={searchQuery}
-          onChangeText={handleSearch}
-        />
-        <FlatList
-          data={filteredUsers}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View style={styles.userItem}>
-              <ThemedText>{item.name}</ThemedText>
-              <Button
-                title="Añadir usuario"
-                onPress={() => handleAddUser(item.name)}
-                color="#007bff"
-              />
-            </View>
-          )}
-        />
-      </ThemedView>
+      <View style={styles.pageContainer}>
+        <ThemedView style={styles.searchContainer}>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search users..."
+            value={searchQuery}
+            onChangeText={handleSearch}
+          />
+          <FlatList
+            data={filteredUsers}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <View style={styles.userItem}>
+                <ThemedText style={styles.userItemText}>{item.name}</ThemedText>
+                <Button
+                  title="Añadir usuario"
+                  onPress={() => handleAddUser(item.name)}
+                  color="#007bff"
+                />
+              </View>
+            )}
+          />
+        </ThemedView>
+      </View>
     </View>
   );
 }
@@ -76,37 +78,36 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
   },
+  pageContainer: {
+    flex: 1,
+    padding: 16,
+  },
   searchContainer: {
     padding: 16,
-    backgroundColor: "#000",
+    backgroundColor: "#fff",
     flex: 1,
   },
   searchInput: {
     height: 40,
-    color: "#fff",
+    color: "#000",
     borderColor: "#333",
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 8,
     marginBottom: 16,
-    backgroundColor: "#1c1c1c",
+    backgroundColor: "#fff",
   },
   userItem: {
     padding: 8,
+    color: "#000",
     borderBottomColor: "#333",
     borderBottomWidth: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
   },
-  addButton: {
-    marginLeft: "auto",
-    backgroundColor: "#ff0050",
-    padding: 8,
-    borderRadius: 8,
-  },
-  addButtonText: {
-    color: "#fff",
+  userItemText: {
+    color: "#000",
   },
 });
 

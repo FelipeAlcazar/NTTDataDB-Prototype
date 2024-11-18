@@ -14,6 +14,7 @@ import {
 import Post from "@/components/Post"; // Importing the Post component
 import React from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import * as ImagePicker from "expo-image-picker";
 
 const warzone = require("@/assets/images/warzone.jpg"); // Import the warzone image
 const futbol = require("@/assets/images/futbol.jpg"); // Import the futbol image
@@ -59,11 +60,7 @@ const posts = [
 ];
 
 export default function Main() {
-  //const posts = readPosts();
-  console.log(posts);
-
   const [selectedTopic, setSelectedTopic] = useState("Todos");
-  // Leer y mostrar los posts
 
   const topics = [
     "Todos",
@@ -83,7 +80,7 @@ export default function Main() {
     category: "",
     author: "",
     content: "",
-    media: null,
+    media: null as string | null,
   });
 
   const handlePost = () => {
@@ -98,10 +95,21 @@ export default function Main() {
     setModalVisible(false);
   };
 
-  const handleAddMedia = () => {
-    // Lógica para añadir medios (puedes usar react-native-image-picker o expo-image-picker).
-    alert("Función para añadir medios no implementada.");
+  const handleAddMedia = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      if (result.assets && result.assets.length > 0) {
+        setNewPost({ ...newPost, media: result.assets[0].uri });
+      }
+    }
   };
+
   const handleInputChange = (field: string, value: string) => {
     setNewPost({ ...newPost, [field]: value });
   };
@@ -248,26 +256,41 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: "#fff",
   },
-  post: {
-    padding: 15,
-    marginBottom: 10,
+  modalContainer: {
+    width: "90%",
     backgroundColor: "#fff",
-    borderRadius: 5,
+    borderRadius: 10,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
-  header: { fontSize: 20, fontWeight: "bold", marginBottom: 20 },
   input: {
     borderWidth: 1,
     borderColor: "#ddd",
     padding: 10,
     marginBottom: 10,
     borderRadius: 5,
+    width: "100%",
   },
-  textArea: { height: 100 },
+  textArea: {
+    height: 100,
+    textAlignVertical: "top",
+  },
   mediaButton: {
     backgroundColor: "#007bff",
     padding: 10,
     borderRadius: 5,
     marginBottom: 10,
+    width: "100%",
   },
-  mediaButtonText: { color: "#fff", textAlign: "center" },
+  mediaButtonText: {
+    color: "#fff",
+    textAlign: "center",
+  },
 });
