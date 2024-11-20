@@ -7,20 +7,20 @@ import {
   View,
   TouchableOpacity,
   Text,
-  ScrollView,
   Modal,
   TextInput,
   Image,
 } from "react-native";
-import Post from "@/components/Post"; // Importing the Post component
+import Post from "@/components/Post";
 import React from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
 
-const warzone = require("@/assets/images/warzone.jpg"); // Import the warzone image
-const futbol = require("@/assets/images/futbol.jpg"); // Import the futbol image
-const nttdata = require("@/assets/images/nttdata.jpg"); // Import the nttdata image
-const logo = require("@/assets/images/posttopiaLogo.png"); // Import the logo image
+const warzone = require("@/assets/images/warzone.jpg");
+const futbol = require("@/assets/images/futbol.jpg");
+const nttdata = require("@/assets/images/nttdata.jpg");
+const triatlon = require("@/assets/images/triatlon.jpg");
+const logo = require("@/assets/images/posttopiaLogo.png");
 
 const posts = [
   {
@@ -49,7 +49,7 @@ const posts = [
       "NTT DATA, ha publicado su informe “Perspectivas para 2025: cómo las organizaciones están forjando su destino con IA generativa“ que revela que ya no hay lugar para especulaciones en lo relativo a esta tecnología. Sus resultados muestran de manera abrumadora que los líderes ejecutivos están pasando de la experimentación a casos de uso a largo plazo que transforman el rendimiento e impactan de lleno en áreas como la cultura corporativa, el compliance, la seguridad y la sostenibilidad. /n ",
     topic: "Anuncio",
     author: "NTTDataES",
-    image: nttdata, // Add the image property
+    image: nttdata,
   },
   {
     id: "4",
@@ -58,6 +58,15 @@ const posts = [
       "Recientemente, he comenzado a explorar la moda sostenible. Es genial llevar ropa que no solo es estilosa, sino también amigable con el medio ambiente. La moda sostenible se enfoca en reducir el impacto ambiental y promover prácticas éticas en la producción de ropa. He descubierto tiendas de segunda mano increíbles y he aprendido a upcycling, transformando prendas viejas en nuevas piezas únicas. Además, apoyar marcas que se preocupan por el planeta me hace sentir que estoy contribuyendo a un futuro mejor.",
     topic: "Moda",
     author: "EcoFashionista",
+  },
+  {
+    id: "5",
+    title: "Mis esfuerzos por mejorar como triatleta!!! 💪💪",
+    content:
+      "🌟 Entrenamiento de Triatlón: ¡Superando mis límites cada día! 🌟\n\nHoy quiero hablarles de algo que me apasiona profundamente: el triatlón. Es un deporte que va más allá de nadar, pedalear y correr. Es una verdadera prueba de resistencia, disciplina y fortaleza mental. 💪🏊‍♂️🚴‍♂️🏃‍♂️\n\nDesde que me inicié en este mundo, he aprendido muchísimo sobre cómo mi cuerpo y mente pueden superar barreras que jamás imaginé. Y lo mejor es que el triatlón no es solo un desafío físico, sino también un estilo de vida que me ha enseñado a ser más organizado, paciente y constante. ⏱️\n\n🏊‍♂️ La natación es mi primer reto: sumergirse en el agua, controlar la respiración y encontrar un ritmo es clave para comenzar bien el día.\n\n🚴‍♂️ El ciclismo es pura adrenalina: esos kilómetros me enseñan a mantener la calma, el enfoque y a aprovechar al máximo mi energía.\n\n🏃‍♂️ La carrera es el momento de dar todo lo que tengo, de sentir que ya casi termino y que lo que sigue es solo seguir avanzando, sin rendirme.\n\nCada día me esfuerzo más para mejorar mi tiempo, mi técnica y mi resistencia. Y aunque a veces las jornadas de entrenamiento son duras, la recompensa llega cuando logras cruzar esa meta y miras hacia atrás con orgullo. 🏅\n\n✨ Si tú también amas el deporte o estás pensando en iniciarte en el triatlón, te animo a que no te rindas, ¡porque todo es posible con constancia! ✨\n\n",
+    topic: "Deportes",
+    author: "Moreno",
+    image: triatlon,
   },
 ];
 
@@ -142,6 +151,11 @@ export default function Main() {
       ]}
     >
       <FlatList
+        ref={(ref) => {
+          if (ref) {
+            ref.scrollToOffset({ animated: true, offset: 0 });
+          }
+        }}
         ListHeaderComponent={
           <>
             <View style={styles.header}>

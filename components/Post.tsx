@@ -16,6 +16,8 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 
+const verifiedIcon = require("@/assets/images/verificado.png");
+
 type PostProps = {
   title: string;
   content: string;
@@ -34,6 +36,8 @@ const colors = [
   "#2E8B57",
   "#483D8B",
 ];
+
+const influencersNames = ["Moreno", "Gonzalo", "juan", "pedro", "luis"];
 
 const topicColors: { [key: string]: string } = {
   Todos: "gray",
@@ -81,6 +85,9 @@ const Post = ({ title, content, topic, author, image }: PostProps) => {
           >
             <Text style={styles.authorText}>
               por <Text style={{ color: authorColor }}>{author}</Text>
+              {influencersNames.includes(author) && (
+                <Image source={verifiedIcon} style={styles.verifiedIcon} />
+              )}
             </Text>
           </TouchableOpacity>
         </View>
@@ -107,16 +114,26 @@ const Post = ({ title, content, topic, author, image }: PostProps) => {
       </ThemedText>
       {image && (
         <>
-          <TouchableOpacity onPress={handleImagePress}>
+          <TouchableOpacity
+            onPress={handleImagePress}
+            accessibilityLabel="Ampliar imagen"
+            accessible={true}
+          >
             <Image source={image} style={styles.image} />
           </TouchableOpacity>
           <Modal
             visible={modalVisible}
             transparent={true}
             style={styles.modalContainer}
+            accessible={true}
+            accessibilityLabel="Imagen ampliada"
           >
             <View style={styles.modalContainer}>
-              <TouchableOpacity onPress={handleCloseModal}>
+              <TouchableOpacity
+                onPress={handleCloseModal}
+                accessible={true}
+                accessibilityLabel="Cerrar imagen ampliada"
+              >
                 <ImageBackground
                   source={image}
                   resizeMode="contain"
@@ -152,7 +169,7 @@ const styles = StyleSheet.create({
   postContainer: {
     marginBottom: 16,
     padding: 16,
-    backgroundColor: "#f0f0f0", // Light background for posts
+    backgroundColor: "#f0f0f0",
     borderRadius: 8,
   },
   header: {
@@ -164,13 +181,17 @@ const styles = StyleSheet.create({
     color: "#000",
   },
   authorContainer: {
+    marginTop: 8,
     alignSelf: "flex-start",
+    fontSize: 12,
+    fontWeight: "bold",
   },
   authorText: {
     fontSize: 12,
+    fontWeight: "bold",
   },
   content: {
-    marginTop: 8, // Add margin to separate title from content
+    marginTop: 8,
   },
   topicContainer: {
     backgroundColor: "green",
@@ -182,7 +203,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   anuncioTopicContainer: {
-    backgroundColor: "yellow", // Yellow background for "anuncio" topic
+    backgroundColor: "yellow",
   },
   topicLabel: {
     color: "#fff",
@@ -233,6 +254,11 @@ const styles = StyleSheet.create({
   closeButtonText: {
     color: "#fff",
     fontSize: 18,
+  },
+  verifiedIcon: {
+    width: 16,
+    height: 16,
+    marginLeft: 12,
   },
 });
 
