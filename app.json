@@ -4,7 +4,7 @@
     "slug": "Postopia-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logo.png",
+    "icon": "./assets/images/logoSolo.png",
     "splash": {
       "image": "./assets/images/logo.png",
       "resizeMode": "contain",
@@ -25,7 +25,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/logo.png"
+      "favicon": "./assets/images/logoSolo.png"
     },
     "plugins": [
       "expo-router",

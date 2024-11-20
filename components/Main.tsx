@@ -10,6 +10,7 @@ import {
   ScrollView,
   Modal,
   TextInput,
+  Image,
 } from "react-native";
 import Post from "@/components/Post"; // Importing the Post component
 import React from "react";
@@ -19,6 +20,7 @@ import * as ImagePicker from "expo-image-picker";
 const warzone = require("@/assets/images/warzone.jpg"); // Import the warzone image
 const futbol = require("@/assets/images/futbol.jpg"); // Import the futbol image
 const nttdata = require("@/assets/images/nttdata.jpg"); // Import the nttdata image
+const logo = require("@/assets/images/posttopiaLogo.png"); // Import the logo image
 
 const posts = [
   {
@@ -67,6 +69,14 @@ export default function Main() {
     ...Array.from(new Set(posts.map((post) => post.topic))),
   ];
 
+  const topicColors: { [key: string]: string } = {
+    Todos: "gray",
+    Videojuegos: "blue",
+    Deportes: "green",
+    Anuncio: "yellow",
+    Moda: "purple",
+  };
+
   const insets = useSafeAreaInsets();
 
   const filteredPosts =
@@ -77,22 +87,32 @@ export default function Main() {
   const [modalVisible, setModalVisible] = useState(false);
   const [newPost, setNewPost] = useState({
     title: "",
-    category: "",
+    topic: "",
     author: "",
     content: "",
     media: null as string | null,
   });
 
   const handlePost = () => {
-    //setFeed([...feed, newPost]);
+    const newPostWithId = {
+      id: (posts.length + 1).toString(),
+      title: newPost.title,
+      topic: newPost.topic,
+      author: newPost.author,
+      content: newPost.content,
+      image: newPost.media,
+    };
+
+    posts.unshift(newPostWithId); // Add the new post to the beginning of the posts array
+
+    setModalVisible(false);
     setNewPost({
       title: "",
-      category: "",
+      topic: "",
       author: "",
       content: "",
       media: null,
-    });
-    setModalVisible(false);
+    }); // Reset the new post state
   };
 
   const handleAddMedia = async () => {
@@ -121,40 +141,55 @@ export default function Main() {
         { paddingTop: insets.top, paddingBottom: insets.bottom },
       ]}
     >
-      <ScrollView contentContainerStyle={styles.feedContainer}>
-        <View style={styles.topicsContainer}>
-          {topics.map((topic) => (
-            <TouchableOpacity
-              key={topic}
-              style={[
-                styles.topicButton,
-                selectedTopic === topic && styles.selectedTopicButton,
-              ]}
-              onPress={() => setSelectedTopic(topic)}
-            >
-              <Text style={styles.topicButtonText}>{topic}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-        <Text style={styles.title}>Publicaciones Recientes</Text>
-        <FlatList
-          data={filteredPosts}
-          renderItem={({ item }) => (
-            <Post
-              title={item.title}
-              content={item.content}
-              topic={item.topic}
-              author={item.author}
-              image={item.image}
-            />
-          )}
-          keyExtractor={(item) => item.id}
-        />
-      </ScrollView>
+      <FlatList
+        ListHeaderComponent={
+          <>
+            <View style={styles.header}>
+              <Image source={logo} style={styles.logo} />
+            </View>
+            <View style={styles.topicsContainer}>
+              {topics.map((topic) => (
+                <TouchableOpacity
+                  key={topic}
+                  style={[
+                    styles.topicButton,
+                    selectedTopic === topic && styles.selectedTopicButton,
+                    { backgroundColor: topicColors[topic] || "gray" },
+                  ]}
+                  onPress={() => setSelectedTopic(topic)}
+                >
+                  <Text
+                    style={
+                      topic === "Anuncio"
+                        ? styles.anuncioText
+                        : styles.topicButtonText
+                    }
+                  >
+                    {topic}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            <Text style={styles.title}>Publicaciones</Text>
+          </>
+        }
+        contentContainerStyle={styles.feedContainer}
+        data={filteredPosts}
+        renderItem={({ item }) => (
+          <Post
+            title={item.title}
+            content={item.content}
+            topic={item.topic}
+            author={item.author}
+            image={item.image}
+          />
+        )}
+        keyExtractor={(item) => item.id}
+      />
+
       <TouchableOpacity
         style={styles.floatingButton}
         onPress={() => {
-          console.log("Floating button pressed");
           setModalVisible(true);
         }}
       >
@@ -182,14 +217,20 @@ export default function Main() {
             placeholder="Tema"
             onChangeText={(text) => handleInputChange("topic", text)}
           />
+          {newPost.media && (
+            <Image
+              source={{ uri: newPost.media }}
+              style={styles.previewImage}
+            />
+          )}
           <TouchableOpacity style={styles.mediaButton} onPress={handleAddMedia}>
             <Text style={styles.mediaButtonText}>Añadir Media</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.mediaButton} onPress={handlePost}>
+          <TouchableOpacity style={styles.publicarBtn} onPress={handlePost}>
             <Text style={styles.mediaButtonText}>Publicar</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.mediaButton}
+            style={styles.closeButton}
             onPress={() => setModalVisible(false)}
           >
             <Text style={styles.mediaButtonText}>Cerrar</Text>
@@ -205,6 +246,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff", // Main background color
   },
+  header: {
+    backgroundColor: "#fff",
+    padding: 6,
+    alignItems: "center",
+    position: "relative",
+  },
+  logo: {
+    width: 250,
+    height: 100,
+  },
   feedContainer: {
     padding: 16,
   },
@@ -212,6 +263,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     marginBottom: 16,
+    marginTop: 12,
   },
   topicButton: {
     backgroundColor: "green",
@@ -292,5 +344,28 @@ const styles = StyleSheet.create({
   mediaButtonText: {
     color: "#fff",
     textAlign: "center",
+  },
+  closeButton: {
+    backgroundColor: "#dc3545",
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+    width: "100%",
+  },
+  publicarBtn: {
+    backgroundColor: "#28a745",
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+    width: "100%",
+  },
+  previewImage: {
+    width: 200,
+    height: 200,
+    marginBottom: 10,
+  },
+  anuncioText: {
+    color: "#000",
+    fontWeight: "bold",
   },
 });
